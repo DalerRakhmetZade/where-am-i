@@ -1,0 +1,7 @@
+/* Injected into the page by the content script. The actual widget lives in a
+   Shadow DOM (see src/progress-ui.js), so this file only needs a safety net to
+   make sure our host element is never hidden or repositioned by the site. */
+#whereami-host {
+  all: initial;
+  position: static;
+}

@@ -1,0 +1,14 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (only used locally for icon generation / tooling)
+node_modules/
+npm-debug.log*
+
+# Packaged builds
+*.zip
+dist/

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Where Am I?</title>
+  </head>
+  <body>
+    <header>
+      <h1>Where Am I?</h1>
+      <label class="switch">
+        <input type="checkbox" id="enabled" />
+        <span>On</span>
+      </label>
+    </header>
+
+    <section id="status">
+      <div class="big" id="pct">—</div>
+      <div class="sub" id="sub">Open a course page to see progress.</div>
+      <div class="seg" id="seg"></div>
+    </section>
+
+    <section class="controls">
+      <div class="row">
+        <label for="position">Position</label>
+        <select id="position">
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="system">System</option>
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+    </section>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

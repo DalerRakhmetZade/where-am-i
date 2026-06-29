@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Where Am I? — Options</title>
+    <style>
+      :root {
+        --bg-a: #11151f;
+        --bg-b: #0a0d13;
+        --glow: rgba(52, 211, 153, 0.08);
+        --card: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.08);
+        --control: rgba(255, 255, 255, 0.05);
+        --control-hover: rgba(255, 255, 255, 0.09);
+        --text: #f1f5f9;
+        --muted: #8b97a8;
+      }
+      body.theme-light {
+        --bg-a: #f8fafc;
+        --bg-b: #eef2f7;
+        --glow: rgba(16, 185, 129, 0.10);
+        --card: rgba(15, 23, 42, 0.04);
+        --border: rgba(15, 23, 42, 0.10);
+        --control: rgba(15, 23, 42, 0.04);
+        --control-hover: rgba(15, 23, 42, 0.08);
+        --text: #0f172a;
+        --muted: #64748b;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+        background:
+          radial-gradient(120% 60% at 50% -5%, var(--glow), transparent 60%),
+          linear-gradient(180deg, var(--bg-a), var(--bg-b));
+        background-attachment: fixed;
+        color: var(--text);
+        max-width: 560px;
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 48px 24px;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1 {
+        font-size: 22px;
+        font-weight: 700;
+        background: linear-gradient(90deg, #34d399, #22d3ee);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      h3 { font-weight: 600; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 0;
+      }
+      label { color: var(--muted); font-weight: 500; }
+      input[type="checkbox"] { accent-color: #34d399; }
+      select, button {
+        background: var(--control);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        transition: background 140ms ease, filter 140ms ease;
+      }
+      select:hover, button:hover { background: var(--control-hover); }
+      button { cursor: pointer; }
+      .danger {
+        color: #fb7185;
+        border-color: rgba(251, 113, 133, 0.35);
+        background: transparent;
+      }
+      .danger:hover { background: rgba(251, 113, 133, 0.10); }
+      p.hint { color: var(--muted); font-size: 13px; line-height: 1.5; }
+      .ok { color: #34d399; font-size: 13px; margin-left: 10px; }
+    </style>
+  </head>
+  <body>
+    <h1>Where Am I? — Settings</h1>
+
+    <div class="card">
+      <div class="row">
+        <label for="enabled">Enabled</label>
+        <input type="checkbox" id="enabled" />
+      </div>
+      <div class="row">
+        <label for="position">Bar position</label>
+        <select id="position">
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="system">System</option>
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Learned data</h3>
+      <p class="hint">
+        Where Am I? remembers each segment's sub-section count so progress stays
+        accurate. You can clear that saved data here.
+      </p>
+      <button id="resetAll" class="danger">Reset all learned totals</button>
+      <span id="resetMsg" class="ok"></span>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>
