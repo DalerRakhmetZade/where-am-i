@@ -18,7 +18,7 @@ to be used. It takes about a minute.
 
 **Option B — Clone with git**
 ```bash
-git clone https://github.com/<your-username>/<repo-name>.git
+git clone https://github.com/DalerRakhmetZade/where-am-i.git
 ```
 
 You should end up with a folder that contains `manifest.json` at its top level.
