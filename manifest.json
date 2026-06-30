@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Where Am I? — Course Progress",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Shows a real progress bar on gated, scroll-and-click course pages where the native scrollbar lies.",
   "permissions": ["storage"],
   "icons": {

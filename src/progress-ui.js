@@ -219,6 +219,12 @@
         this._mql.addListener(this._mqlHandler);
       }
 
+      // Keep the minimized pill on-screen and corner-anchored across resizes.
+      this._resizeHandler = () => {
+        if (this.settings.minimized && this._pill) this._applyPillAnchor();
+      };
+      window.addEventListener("resize", this._resizeHandler, { passive: true });
+
       this._build();
     }
 
@@ -240,26 +246,9 @@
         const pill = document.createElement("div");
         pill.className = "wai-pill";
         pill.title = "Drag to move · click to expand";
-        // Restore a dragged position, if any.
-        const p = this.settings.pillPos;
-        if (p && typeof p.left === "number" && typeof p.top === "number") {
-          pill.style.left = p.left + "px";
-          pill.style.top = p.top + "px";
-          pill.style.right = "auto";
-          pill.style.bottom = "auto";
-        }
         this.root.appendChild(pill);
         this._pill = pill;
-        // Clamp a saved position back on-screen (e.g. after a window resize),
-        // so the pill can never end up invisible/unreachable.
-        if (p && typeof p.left === "number" && typeof p.top === "number") {
-          const w = pill.offsetWidth || 80;
-          const h = pill.offsetHeight || 28;
-          const left = Math.max(4, Math.min(window.innerWidth - w - 4, p.left));
-          const top = Math.max(4, Math.min(window.innerHeight - h - 4, p.top));
-          pill.style.left = left + "px";
-          pill.style.top = top + "px";
-        }
+        this._applyPillAnchor(); // position from saved corner-anchored offsets
         this._setupPillDrag(pill);
         this.render(this.lastState || { overall: 0, currentStep: 1 });
         return;
@@ -305,6 +294,49 @@
       this.root.appendChild(bar);
 
       if (this.lastState) this.render(this.lastState);
+    }
+
+    // Normalize any saved pillPos (incl. the older {left,top} format) into a
+    // corner-anchored form: which horizontal/vertical edge it's nearest, plus
+    // the offset from that edge. Anchoring to an edge means the pill keeps a
+    // fixed distance from that corner and so follows window resizes naturally.
+    _pillAnchor() {
+      const p = this.settings.pillPos;
+      if (!p) return null;
+      if (p.hSide && p.vSide) return p;
+      // Migrate legacy {left, top} → nearest-corner anchor.
+      if (typeof p.left === "number" && typeof p.top === "number") {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const hSide = p.left + 40 <= vw / 2 ? "left" : "right";
+        const vSide = p.top + 14 <= vh / 2 ? "top" : "bottom";
+        return {
+          hSide,
+          hOffset: hSide === "left" ? p.left : Math.max(4, vw - p.left - 80),
+          vSide,
+          vOffset: vSide === "top" ? p.top : Math.max(4, vh - p.top - 28),
+        };
+      }
+      return null;
+    }
+
+    // Apply the saved corner anchor to the pill, clamped so it always stays
+    // fully on-screen even if the window is now smaller than the saved offset.
+    _applyPillAnchor() {
+      const pill = this._pill;
+      if (!pill) return;
+      const a = this._pillAnchor();
+      if (!a) return; // no saved position → use the CSS default (bottom-left)
+      const w = pill.offsetWidth || 80;
+      const h = pill.offsetHeight || 28;
+      const maxH = Math.max(4, window.innerWidth - w - 4);
+      const maxV = Math.max(4, window.innerHeight - h - 4);
+      const hOff = Math.max(4, Math.min(maxH, a.hOffset));
+      const vOff = Math.max(4, Math.min(maxV, a.vOffset));
+      pill.style.left = a.hSide === "left" ? hOff + "px" : "auto";
+      pill.style.right = a.hSide === "right" ? hOff + "px" : "auto";
+      pill.style.top = a.vSide === "top" ? vOff + "px" : "auto";
+      pill.style.bottom = a.vSide === "bottom" ? vOff + "px" : "auto";
     }
 
     _setMinimized(min) {
@@ -369,8 +401,20 @@
         }
         if (moved) {
           const rect = pill.getBoundingClientRect();
-          this.settings.pillPos = { left: rect.left, top: rect.top };
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const hSide = cx <= vw / 2 ? "left" : "right";
+          const vSide = cy <= vh / 2 ? "top" : "bottom";
+          this.settings.pillPos = {
+            hSide,
+            hOffset: hSide === "left" ? Math.max(4, rect.left) : Math.max(4, vw - rect.right),
+            vSide,
+            vOffset: vSide === "top" ? Math.max(4, rect.top) : Math.max(4, vh - rect.bottom),
+          };
           NS.storage.setSettings({ pillPos: this.settings.pillPos });
+          this._applyPillAnchor(); // snap to the anchored edges immediately
         } else {
           this._setMinimized(false); // simple click → expand
         }
@@ -439,6 +483,9 @@
         } else if (this._mql.removeListener) {
           this._mql.removeListener(this._mqlHandler);
         }
+      }
+      if (this._resizeHandler) {
+        window.removeEventListener("resize", this._resizeHandler);
       }
       if (this.host && this.host.parentNode) {
         this.host.parentNode.removeChild(this.host);
