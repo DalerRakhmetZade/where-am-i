@@ -92,5 +92,20 @@ select {
 }
 select:hover { background: var(--panel-hover); }
 
+.btn {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+.btn:hover { background: var(--panel-hover); }
+
 /* The last section has no divider below it. */
 section:last-of-type { border-bottom: none; }

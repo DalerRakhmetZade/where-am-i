@@ -93,6 +93,12 @@ async function init() {
     applyTheme(e.target.value);
     setSettings({ theme: e.target.value });
   });
+  $("resetBar").addEventListener("click", async () => {
+    // Bring the bar back: un-minimize, clear any saved pill position, ensure on.
+    await setSettings({ enabled: true, minimized: false, pillPos: null });
+    $("enabled").checked = true;
+    refresh();
+  });
   // Track OS scheme changes while the popup is open in "system" mode.
   themeMql.addEventListener &&
     themeMql.addEventListener("change", () => {

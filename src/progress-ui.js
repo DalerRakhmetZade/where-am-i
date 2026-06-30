@@ -165,7 +165,7 @@
     .wai-pill {
       pointer-events: auto;
       position: fixed;
-      bottom: 14px; right: 14px;
+      bottom: 16px; left: 16px;
       background: var(--wai-pill-grad);
       color: var(--wai-text); border-radius: 999px;
       padding: 7px 14px; font-size: 12px; font-weight: 600;
@@ -250,6 +250,16 @@
         }
         this.root.appendChild(pill);
         this._pill = pill;
+        // Clamp a saved position back on-screen (e.g. after a window resize),
+        // so the pill can never end up invisible/unreachable.
+        if (p && typeof p.left === "number" && typeof p.top === "number") {
+          const w = pill.offsetWidth || 80;
+          const h = pill.offsetHeight || 28;
+          const left = Math.max(4, Math.min(window.innerWidth - w - 4, p.left));
+          const top = Math.max(4, Math.min(window.innerHeight - h - 4, p.top));
+          pill.style.left = left + "px";
+          pill.style.top = top + "px";
+        }
         this._setupPillDrag(pill);
         this.render(this.lastState || { overall: 0, currentStep: 1 });
         return;
